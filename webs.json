@@ -1,0 +1,25 @@
+{
+  "_leeme": "Webs que vigila GitHub Actions cada 15 minutos. Añade o quita entradas; el nombre sale en los avisos.",
+  "webs": [
+    {
+      "nombre": "Tu Futura Vivienda",
+      "url": "https://tufuturavivienda.com"
+    },
+    {
+      "nombre": "Cuentas del Curro",
+      "url": "https://cuentasdelcurro.com"
+    },
+    {
+      "nombre": "El Autónomo Digital",
+      "url": "https://elautonomodigital.com"
+    },
+    {
+      "nombre": "Mi Plaza Pública",
+      "url": "https://miplazapublica.com"
+    },
+    {
+      "nombre": "HazVerifactu",
+      "url": "https://hazverifactu.com"
+    }
+  ]
+}

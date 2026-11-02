@@ -1,0 +1,43 @@
+# Vigilancia 24/7 del Panel de control: comprueba las webs cada 15 minutos aunque tu ordenador esté apagado.
+# En un repositorio PÚBLICO los minutos de Actions son gratis e ilimitados. Si lo haces privado,
+# cambia el cron a "*/30 * * * *" para no pasar de los 2.000 minutos gratis al mes.
+name: Vigilancia 24/7
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: vigilancia
+  cancel-in-progress: false
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Preparar la rama de datos
+        run: |
+          git config user.name "vigilancia-bot"
+          git config user.email "vigilancia-bot@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin datos >/dev/null; then
+            git fetch --depth 1 origin datos
+            git worktree add datos FETCH_HEAD
+          else
+            git worktree add --orphan -b datos datos
+          fi
+      - name: Comprobar las webs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node comprobar.mjs
+      - name: Guardar resultados
+        run: |
+          cd datos
+          git add estado.json historial.json
+          git commit -q -m "Vigilancia $(date -u +%FT%TZ)" || exit 0
+          git push -q origin HEAD:datos
